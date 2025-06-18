@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <link rel="stylesheet" th:href="@{/home.css}" />
+</head>
+<body>
+<section class="to-do">
+    <h2>Todo List</h2>
+    <form class="input" th:action="@{/todos}" method="post" autocomplete="off">
+        <input type="text" class="input-field" id="toDoInput" placeholder="Add a new todo" name="text" />
+        <button class="btn" type="submit">Add</button>
+    </form>
+    <ul class="scroll" id="toDoList">
+        <li th:each="todo : ${todoList}" th:class="'todo-container' + (${todo.disabled} ? ' disabled' : '')">
+            <form th:action="@{/todos/toggle/{id}(id=${todo.id})}" method="post" style="display:inline;">
+                <input type="checkbox" th:checked="${todo.disabled}" onchange="this.form.submit()"/>
+            </form>
+            <form th:action="@{/todos/edit/{id}(id=${todo.id})}" method="post" style="display:inline;">
+                <input type="text" name="text" th:value="${todo.text}" style="border:none;background:transparent;padding:0;width:auto;"
+                       onblur="this.form.submit()"
+                       onkeydown="if(event.key==='Enter'){this.blur();return false;}" />
+            </form>
+        </li>
+    </ul>
+    <div>
+        <hr class="counter" />
+        <div class="counter-container">
+            <p>
+                <span id="toDoCount" th:text="${todoList.size()}">0</span> items total
+            </p>
+            <form th:action="@{/todos/deleteAll}" method="post" style="display:inline;">
+                <button id="deleteButton" type="submit">Delete All</button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>
